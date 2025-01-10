@@ -6,8 +6,8 @@ from datetime import datetime
 import torch
 import numpy as np
 
-import gym
-import roboschool
+import gymnasium as gym
+# import roboschool
 
 from PPO import PPO
 
@@ -33,15 +33,20 @@ def test():
     # max_ep_len = 1500           # max timesteps in one episode
     # action_std = 0.1            # set same std for action distribution which was used while saving
 
-    env_name = "RoboschoolWalker2d-v1"
-    has_continuous_action_space = True
-    max_ep_len = 1000           # max timesteps in one episode
-    action_std = 0.1            # set same std for action distribution which was used while saving
+    # env_name = "Ant-v5"
+    # has_continuous_action_space = True
+    # max_ep_len = 1000
+    # action_std = 0.1
+
+    # env_name = "RoboschoolWalker2d-v1"
+    # has_continuous_action_space = True
+    # max_ep_len = 1000           # max timesteps in one episode
+    # action_std = 0.1            # set same std for action distribution which was used while saving
 
     render = True              # render environment on screen
     frame_delay = 0             # if required; add delay b/w frames
 
-    total_test_episodes = 10    # total num of testing episodes
+    total_test_episodes = 5    # total num of testing episodes
 
     K_epochs = 80               # update policy for K epochs
     eps_clip = 0.2              # clip parameter for PPO
@@ -52,7 +57,7 @@ def test():
 
     #####################################################
 
-    env = gym.make(env_name)
+    env = gym.make(env_name, render_mode="human")
 
     # state space dimension
     state_dim = env.observation_space.shape[0]
@@ -83,18 +88,18 @@ def test():
 
     for ep in range(1, total_test_episodes+1):
         ep_reward = 0
-        state = env.reset()
+        state, _ = env.reset()
 
         for t in range(1, max_ep_len+1):
             action = ppo_agent.select_action(state)
-            state, reward, done, _ = env.step(action)
+            state, reward, done, truncated, _ = env.step(action)
             ep_reward += reward
 
             if render:
                 env.render()
                 time.sleep(frame_delay)
 
-            if done:
+            if done or truncated:
                 break
 
         # clear buffer

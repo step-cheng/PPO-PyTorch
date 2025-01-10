@@ -94,17 +94,17 @@ def save_gif_images(env_name, has_continuous_action_space, max_ep_len, action_st
 		state = env.reset()
 
 		for t in range(1, max_ep_len+1):
-		    action = ppo_agent.select_action(state)
-		    state, reward, done, _ = env.step(action)
-		    ep_reward += reward
+			action = ppo_agent.select_action(state)
+			state, reward, done, _ = env.step(action)
+			ep_reward += reward
 
-		    img = env.render(mode = 'rgb_array')
+			img = env.render(mode = 'rgb_array')
 
-		    img = Image.fromarray(img)
-		    img.save(gif_images_dir + '/' + str(t).zfill(6) + '.jpg')
+			img = Image.fromarray(img)
+			img.save(gif_images_dir + '/' + str(t).zfill(6) + '.jpg')
 
-		    if done:
-		        break
+			if done:
+				break
 
 		# clear buffer
 		ppo_agent.buffer.clear()
